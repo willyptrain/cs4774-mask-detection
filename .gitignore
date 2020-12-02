@@ -1,0 +1,4 @@
+models/*.zip
+models/*.weights
+models/*.cfg
+__pycache__
