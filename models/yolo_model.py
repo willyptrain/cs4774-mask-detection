@@ -62,7 +62,7 @@ class YoloModel:
             ax.add_patch(rect)
         plt.show()
 
-    def predict(self, img, label="person", threshold=0.75, plot=True):
+    def predict(self, img, label="person", threshold=0.70, plot=True):
         img = cv2.resize(img, (416,416))
         blob = cv2.dnn.blobFromImage(img, 1/255.0, (416, 416), swapRB=True, crop=True)
         self.net.setInput(blob)
@@ -85,15 +85,15 @@ class YoloModel:
                     boxes.append([box[0],box[1],box[2],box[3]]) #read somewhere that NMSBoxes only takes lists, not np arrays
                     scores.append(float(label_score))
 
-
+        
         non_overlap_indices = cv2.dnn.NMSBoxes(boxes, scores, threshold, 0.4) 
         top_boxes = [boxes[int(i)] for i in non_overlap_indices.flatten()]
         if(plot):
             self.plot_boxes(img,top_boxes)
 
-        return top_boxes 
+        return {"boxes": top_boxes, "label_count":len(boxes) } 
 
 
-yolo = YoloModel("yolov3.weights", "yolov3.cfg", "coco.names")
-test = cv2.imread("one_mask_no_mask.JPG")#, cv2.COLOR_BGR2RGB)
-yolo.predict(test)
+# yolo = YoloModel("yolov3.weights", "yolov3.cfg", "coco.names")
+# test = cv2.imread("../crowd_images/mask1.jpg")#, cv2.COLOR_BGR2RGB)
+# print(yolo.predict(test)["label_count"])

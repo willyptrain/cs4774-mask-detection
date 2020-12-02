@@ -53,7 +53,7 @@ class FasterRCNN:
 
     
     
-    def plot_boxes(self, img, annotation):
+    def plot_boxes(self, img, annotation, plot_save_to=None):
         fig,ax = plt.subplots(1) 
         # img = img_tensor.cpu().data
 
@@ -68,12 +68,15 @@ class FasterRCNN:
             color = (0,1,0,0.1) if (annotation["labels"][i] == 3) else (1,0,0,0.1)
             rect = matplotlib.patches.Rectangle((xmin,ymin),xmax-xmin,ymax-ymin,edgecolor=color,facecolor=color)
             ax.add_patch(rect)
+        
+        if(plot_save_to):
+            plt.savefig(plot_save_to)
 
 
-        plt.show()
+        # plt.show()
 
 
-    def predict(self, img, threshold=0.8, plot=True):
+    def predict(self, img, threshold=0.75, plot=True, plot_save_to=None):
         img_tensor = self.transform(img)
         img_tensor = img_tensor.to(self.device)
         annotation = self.model([img_tensor])
@@ -81,37 +84,39 @@ class FasterRCNN:
         scores = [float(score) for score in annotation[0]["scores"]]
         labels = [int(label) for label in annotation[0]["labels"]]
         non_overlap_indices = cv2.dnn.NMSBoxes(boxes, scores, threshold, 0.4) 
-        print(boxes)
-        print(scores)
-        print(labels)
-        print(non_overlap_indices)
         if(type(non_overlap_indices) is not tuple):
             top_boxes = [boxes[int(i)] for i in non_overlap_indices.flatten()]
             top_scores = [scores[int(i)] for i in non_overlap_indices.flatten()]
             top_labels = [labels[int(i)] for i in non_overlap_indices.flatten()]
+            # print("Detected:")
+            label_mappings = {3:"with_mask", 2:"mask_weared_incorrect", 1:"without_mask", 0:"background"} #0 for background class, not used 
+            string_labels = map(label_mappings.get, top_labels)
+            label_frequencies = {"with_mask":0, "mask_weared_incorrect":0,"without_mask":0,"background":0}#Counter(string_labels)
+            
+            for label in string_labels:
+                label_frequencies[label] = label_frequencies.get(label, 0) + 1
+            
+            # for tup in label_frequencies.most_common():
+                # print("\t", tup[0], tup[1])
             top_annotation = {
                 "boxes":top_boxes,
                 "labels":top_labels,
-                "scores":top_scores
+                "scores":top_scores,
+                "label_frequencies":label_frequencies
             }
-            print("Detected:")
-            label_mappings = {3:"with_mask", 2:"mask_weared_incorrect", 1:"without_mask", 0:"background"} #0 for background class, not used 
-            string_labels = map(label_mappings.get, top_labels)
-            label_frequencies = Counter(string_labels)
-            for tup in label_frequencies.most_common():
-                print("\t", tup[0], tup[1])
             if(plot):
-                self.plot_boxes(img,top_annotation)
+                self.plot_boxes(img,top_annotation, plot_save_to)
         else:
             top_annotation = {
                 "boxes":[],
                 "labels":[],
-                "scores":[]
+                "scores":[],
+                "label_frequencies":{"with_mask":0, "mask_weared_incorrect":0,"without_mask":0,"background":0}#Counter(string_labels)
             }
 
         return top_annotation
 
 
 # rcnn = FasterRCNN("updated_rcnn.zip")
-# test = Image.open("one_mask_no_mask.JPG")
+# test = Image.open("../crowd_images/mask1.jpg")
 # rcnn.predict(test,threshold=0.5)
