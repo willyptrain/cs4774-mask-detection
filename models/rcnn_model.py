@@ -72,8 +72,8 @@ class FasterRCNN:
         if(plot_save_to):
             plt.savefig(plot_save_to)
 
-
-        # plt.show()
+        
+        plt.show()
 
 
     def predict(self, img, threshold=0.75, plot=True, plot_save_to=None):

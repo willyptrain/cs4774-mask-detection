@@ -62,7 +62,7 @@ class YoloModel:
             ax.add_patch(rect)
         plt.show()
 
-    def predict(self, img, label="person", threshold=0.70, plot=True):
+    def predict(self, img, label="person", threshold=0.70, nms_threshold=0.4,plot=True):
         img = cv2.resize(img, (416,416))
         blob = cv2.dnn.blobFromImage(img, 1/255.0, (416, 416), swapRB=True, crop=True)
         self.net.setInput(blob)
@@ -86,13 +86,15 @@ class YoloModel:
                     scores.append(float(label_score))
 
         
-        non_overlap_indices = cv2.dnn.NMSBoxes(boxes, scores, threshold, 0.4) 
-        top_boxes = [boxes[int(i)] for i in non_overlap_indices.flatten()]
-        if(plot):
-            self.plot_boxes(img,top_boxes)
+        non_overlap_indices = cv2.dnn.NMSBoxes(boxes, scores, threshold, nms_threshold) 
+        if(type(non_overlap_indices) is not tuple):
+            top_boxes = [boxes[int(i)] for i in non_overlap_indices.flatten()]
+            if(plot):
+                self.plot_boxes(img,top_boxes)
 
-        return {"boxes": top_boxes, "label_count":len(boxes) } 
-
+            return {"boxes": top_boxes, "label_count":len(top_boxes) } 
+        else:
+            return {"boxes": [], "label_count":0} 
 
 # yolo = YoloModel("yolov3.weights", "yolov3.cfg", "coco.names")
 # test = cv2.imread("../crowd_images/mask1.jpg")#, cv2.COLOR_BGR2RGB)
