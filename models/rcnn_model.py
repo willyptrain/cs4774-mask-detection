@@ -118,5 +118,5 @@ class FasterRCNN:
 
 
 # rcnn = FasterRCNN("updated_rcnn.zip")
-# test = Image.open("../crowd_images/mask1.jpg")
-# rcnn.predict(test,threshold=0.5)
+# test = Image.open("../covid_benchmark_data/Train/Mask/0486.jpg")
+# rcnn.predict(test,threshold=0.5, plot=True)

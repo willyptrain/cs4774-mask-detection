@@ -36,12 +36,12 @@ class ModelStack:
         yolo_prediction = self.yolo.predict(img,plot=plot,threshold=threshold,nms_threshold=nms_threshold)
         return yolo_prediction["label_count"]
 
-    def get_mask_count(self, img, plot=True, plot_save_to=None):
-        label_frequencies = self.rcnn.predict(img,plot=plot,plot_save_to=plot_save_to)
+    def get_mask_count(self, img, plot=True, plot_save_to=None,rcnn_threshold=0.75):
+        label_frequencies = self.rcnn.predict(img,plot=plot,plot_save_to=plot_save_to,threshold=rcnn_threshold)
         return label_frequencies["label_frequencies"]
 
-    def get_mask_compliance(self, img, write_to_path=None,img_path=""):
-        label_frequencies = self.get_mask_count(img,plot=False)
+    def get_mask_compliance(self, img, write_to_path=None,img_path="",rcnn_threshold=0.75):
+        label_frequencies = self.get_mask_count(img,plot=False,threshold=threshold)
         print(label_frequencies)
         yolo_person_count = self.get_person_count(img,plot=False,nms_threshold=0.9)
         mask_wearing_count = label_frequencies["with_mask"]
@@ -89,8 +89,8 @@ class ModelStack:
             #     f.write("Minimum Compliance: "+str(min_mask_compliance)+"\n")
             #     f.write("Maximum Compliance: "+str(max_mask_compliance)+"\n\n")
 
-    def get_mask_predictions(self, img):
-        label_frequencies = self.rcnn.predict(img,plot=False)
+    def get_mask_predictions(self, img,rcnn_threshold=0.75):
+        label_frequencies = self.rcnn.predict(img,plot=False,threshold=rcnn_threshold)
         return label_frequencies
      
 
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # print(predictions)
     df = pd.DataFrame(data=predictions)
     print(df)
-    df.to_csv("../crowd_predictions/predictions.csv",index=False)
+    # df.to_csv("../crowd_predictions/predictions.csv",index=False)
     
 
 
