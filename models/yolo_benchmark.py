@@ -39,7 +39,7 @@ if __name__ == "__main__":
             img = cv2.cvtColor(cv2.imread(os.path.join(base_dir,path)), cv2.COLOR_BGR2RGB)
             index += 1
             print(index, "/", len_dir)
-            person_count += stack.get_person_count(img,threshold=0.9,plot=False)
+            person_count += stack.get_person_count(img,threshold=0.9,nms_threshold=0.1,plot=False)
             
     
     print("Nonmask Person Count: ",person_count)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
             img = cv2.cvtColor(cv2.imread(os.path.join(base_dir,path)), cv2.COLOR_BGR2RGB)
             index += 1
             print(index, "/", len_dir)
-            person_count += stack.get_person_count(img,threshold=0.9,plot=False)
+            person_count += stack.get_person_count(img,threshold=0.9,nms_threshold=0.1,plot=False)
             
     print("Mask Person Count: ",person_count)
             
@@ -61,14 +61,3 @@ if __name__ == "__main__":
 #YOLO:
 # Nonmask Person Count:  99
 # Mask Person Count:  103
-
-# RCNN
-# Nonmask:
-# {'without_mask': 89, 'with_mask': 23}
-# Mask:
-# {'with_mask': 97, 'without_mask': 1}
-
-
-    
-
-

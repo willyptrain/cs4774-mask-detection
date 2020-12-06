@@ -6,10 +6,7 @@ import os
 import sys
 import pandas as pd
 
-# Keras
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
+
 from keras.wrappers.scikit_learn import KerasClassifier
 from collections import Counter
 import scipy.io as sio

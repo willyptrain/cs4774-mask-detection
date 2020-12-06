@@ -41,7 +41,7 @@ class YoloModel:
     
     def transform_bounding_box(self,box, shape=(416,416)):
         
-        box = box * np.array([shape[1], shape[0], shape[1], shape[0]]) #width, height, width, height => scale the image
+        box = box * np.array([shape[1], shape[0], shape[0], shape[1]]) #width, height, width, height => scale the image
         box = [int(box[0] - (box[2] / 2)), int(box[1] - (box[3] / 2)), int(box[2]), int(box[3])] #xmin, ymin, width, height
         return box
 
