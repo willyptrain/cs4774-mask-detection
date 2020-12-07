@@ -1,1 +1,2 @@
-# cs4774-mask-detection
+# Faster R-CNN and YOLO for Mask Detection
+
