@@ -10,7 +10,7 @@ behaviors that may indicate the relative compliance. For example,
 understanding how one individual’s adherence to mask wearing
 affect another’s
 
-![image]()
+![image](mask_single_image.jpg)
 
 
 
